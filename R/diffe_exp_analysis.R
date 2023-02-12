@@ -1,5 +1,6 @@
 # Load the RSE
 load('data/rse_gene_SRP048604.RData')
+library("edgeR")
 
 # Expand the sra sample attributes
 rse_gene_SRP048604 <- expand_sra_attributes(rse_gene_SRP048604)
@@ -37,5 +38,10 @@ rse_gene_SRP048604 <- rse_gene_SRP048604[gene_means > 0.1, ]
 round(nrow(rse_gene_SRP048604) / nrow(rse_gene_SRP048604_unfiltered) * 100, 2)
 # 61.89
 
-
+# Normalize data
+dge <- DGEList(
+  counts = assay(rse_gene_SRP048604, "counts"),
+  genes = rowData(rse_gene_SRP048604)
+)
+dge <- calcNormFactors(dge)
 
