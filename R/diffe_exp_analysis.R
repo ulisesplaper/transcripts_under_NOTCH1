@@ -1,6 +1,7 @@
 # Load the RSE
 load('data/rse_gene_SRP048604.RData')
 library("edgeR")
+library("ggplot2")
 
 # Expand the sra sample attributes
 rse_gene_SRP048604 <- expand_sra_attributes(rse_gene_SRP048604)
@@ -13,6 +14,7 @@ colData(rse_gene_SRP048604)[
 
 #Generate a colData atribute with the interest atribute
 rse_gene_SRP048604$culture <- factor(rse_gene_SRP048604$`sra_attribute.co-culture`)
+rse_gene_SRP048604$culture <- relevel(rse_gene_SRP048604$culture, ref = 'OP9-GFP')
 rse_gene_SRP048604$culture
 
 # Make control quality assessment of samples
@@ -44,4 +46,11 @@ dge <- DGEList(
   genes = rowData(rse_gene_SRP048604)
 )
 dge <- calcNormFactors(dge)
+
+# Visualize expression distribution in samples
+ggplot(as.data.frame(colData(rse_gene_SRP048604)), aes(y = assigned_gene_prop, x = culture)) +
+  geom_boxplot() +
+  theme_bw(base_size = 20) +
+  ylab("Assigned Gene Prop") +
+  xlab("Culture grouo")
 
