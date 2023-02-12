@@ -53,4 +53,9 @@ ggplot(as.data.frame(colData(rse_gene_SRP048604)), aes(y = assigned_gene_prop, x
   theme_bw(base_size = 20) +
   ylab("Assigned Gene Prop") +
   xlab("Culture grouo")
+# Generate statistics model
+mod <- model.matrix(~ culture + assigned_gene_prop,
+                    data = colData(rse_gene_SRP048604)
+)
+colnames(mod)
 
