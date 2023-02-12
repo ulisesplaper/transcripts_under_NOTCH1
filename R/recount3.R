@@ -4,7 +4,6 @@
 # Import packages
 library("recount3")
 
-
 ## Current url
 getOption(
   "recount3_url",
