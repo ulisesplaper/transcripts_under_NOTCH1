@@ -79,3 +79,7 @@ dim(de_results)
 table(de_results$P.Value < 0.05)
 #FALSE  TRUE
 #35529  3990
+
+# Plots of DEGs
+plotMA(eb_results, coef = 2)
+volcanoplot(eb_results, coef = 2, highlight = 3, names = de_results$gene_name)
