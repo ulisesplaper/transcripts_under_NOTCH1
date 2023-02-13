@@ -2,6 +2,7 @@
 load('data/rse_gene_SRP048604.RData')
 library("edgeR")
 library("ggplot2")
+library("limma")
 
 # Expand the sra sample attributes
 rse_gene_SRP048604 <- expand_sra_attributes(rse_gene_SRP048604)
@@ -58,4 +59,23 @@ mod <- model.matrix(~ culture + assigned_gene_prop,
                     data = colData(rse_gene_SRP048604)
 )
 colnames(mod)
+mod
+# Differential expression analysis
+vGenes <- voom(dge, mod, plot = T)
 
+eb_results <- eBayes(lmFit(vGenes))
+
+de_results <- topTable(
+  eb_results,
+  coef = 2,
+  number = nrow(rse_gene_SRP048604),
+  sort.by = "p"
+)
+de_results
+dim(de_results)
+#39519    16
+
+# Number of DEGs
+table(de_results$P.Value < 0.05)
+#FALSE  TRUE
+#35529  3990
