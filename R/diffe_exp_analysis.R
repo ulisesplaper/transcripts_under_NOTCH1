@@ -3,6 +3,7 @@ load('data/rse_gene_SRP048604.RData')
 library("edgeR")
 library("ggplot2")
 library("limma")
+library("pheatmap")
 
 # Expand the sra sample attributes
 rse_gene_SRP048604 <- expand_sra_attributes(rse_gene_SRP048604)
@@ -83,3 +84,27 @@ table(de_results$P.Value < 0.05)
 # Plots of DEGs
 plotMA(eb_results, coef = 2)
 volcanoplot(eb_results, coef = 2, highlight = 3, names = de_results$gene_name)
+
+# Get the top 50 genes
+exprs_heatmap <- vGenes$E[rank(de_results$logFC) <= 50, ]
+exprs_heatmap
+
+
+# Generate a heatmap of
+df <- as.data.frame(colData(rse_gene_SRP048604)[, c("sra_attribute.co-culture")])
+colData(rse_gene_SRP048604)[, "sra_attribute.co-culture"]
+
+colnames(df) <- c("culture")
+rownames(df) <- c('SRR1596221', 'SRR1596222','SRR1596223', 'SRR1596224')
+pheatmap(
+  exprs_heatmap,
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = FALSE,
+  show_colnames = FALSE,
+  annotation_col = df
+)
+
+## Create plots MDS
+plotMDS(vGenes$E, labels = df$culture, col = c("blue","red"))
+
