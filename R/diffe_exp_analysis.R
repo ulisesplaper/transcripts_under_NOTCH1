@@ -72,24 +72,25 @@ de_results <- topTable(
   number = nrow(rse_gene_SRP048604),
   sort.by = "p"
 )
-de_results
+head(de_results)
 dim(de_results)
 #39519    16
 
 # Number of DEGs
-table(de_results$P.Value < 0.05)
-#FALSE  TRUE
-#35529  3990
+table(de_results$adj.P.Val<0.05)
+#FALSE
+#39519 (NOT Differential Expressed Genes found
+# at a false discovery rate (FDR) threshold of 5%)
 
 # Plots of DEGs
 plotMA(eb_results, coef = 2)
 volcanoplot(eb_results, coef = 2, highlight = 3, names = de_results$gene_name)
 
+
 # Get the top 50 genes
-exprs_heatmap <- vGenes$E[rank(de_results$logFC) <= 50, ]
-exprs_heatmap
-
-
+exprs_heatmap <- vGenes$E[rank(de_results$adj.P.Val) <= 50,]
+# Rename the rows of the top 50 genes
+rownames(exprs_heatmap) <- de_results[row.names(exprs_heatmap),"gene_name"]
 # Generate a heatmap of
 df <- as.data.frame(colData(rse_gene_SRP048604)[, c("sra_attribute.co-culture")])
 colData(rse_gene_SRP048604)[, "sra_attribute.co-culture"]
@@ -100,11 +101,12 @@ pheatmap(
   exprs_heatmap,
   cluster_rows = TRUE,
   cluster_cols = TRUE,
-  show_rownames = FALSE,
+  show_rownames = TRUE,
   show_colnames = FALSE,
   annotation_col = df
 )
 
+de_results
 ## Create plots MDS
 plotMDS(vGenes$E, labels = df$culture, col = c("blue","red"))
 
