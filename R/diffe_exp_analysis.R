@@ -1,4 +1,4 @@
-# Load the RSE
+# Load the RSE and packages
 load('data/rse_gene_SRP048604.RData')
 library("edgeR")
 library("ggplot2")
@@ -56,7 +56,7 @@ ggplot(as.data.frame(colData(rse_gene_SRP048604)), aes(y = assigned_gene_prop, x
   ylab("Assigned Gene Prop") +
   xlab("Culture grouo")
 # Generate statistics model
-mod <- model.matrix(~ culture + assigned_gene_prop,
+mod <- model.matrix(~culture + assigned_gene_prop,
                     data = colData(rse_gene_SRP048604)
 )
 colnames(mod)
